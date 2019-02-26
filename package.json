@@ -1,20 +1,29 @@
 {
-  "name": "instance-srv-nodejs",
+  "name": "instance-backend-nodejs",
   "version": "1.0.0",
   "description": "Service for running a Nile instance",
   "main": "./src/index.js",
   "scripts": {
     "start": "node ./src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "standard --fix",
+    "migrate-instance-lib-js": "db-migrate up -m node_modules/instance-lib-js/migrations"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nileorg/instance-srv-nodejs.git"
+    "url": "git+https://github.com/nileorg/instance-backend-nodejs.git"
   },
   "author": "",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/nileorg/instance-srv-nodejs/issues"
+    "url": "https://github.com/nileorg/instance-backend-nodejs/issues"
   },
-  "homepage": "https://github.com/nileorg/instance-srv-nodejs#readme"
+  "homepage": "https://github.com/nileorg/instance-backend-nodejs#readme",
+  "dependencies": {
+    "instance-lib-js": "git+https://github.com/nileorg/instance-lib-js.git"
+  },
+  "devDependencies": {
+    "db-migrate": "^0.11.4",
+    "db-migrate-sqlite3": "^0.3.1",
+    "standard": "*"
+  }
 }

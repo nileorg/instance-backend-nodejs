@@ -6,3 +6,19 @@ The Instance Service (Node.js ) is composed by two parts:
 
 
 * **Backend** A set of API to manage the instance. The instance-lib-js is used for checking online nodes, using models to manage thing in the database. with the backend you manage registered nodes, clients. Backend communicates with admin app (frontend).
+
+## Configuration
+1. Install the nodejs dependencies
+    ```
+    npm install
+    ```
+3. Create empty file `./var/instance.db`
+2. Migrate instance-lib-js migrations to the database
+    ```
+    npmpy run migrate-instance-lib-js
+    ```
+
+## Running
+```
+npm start
+```
