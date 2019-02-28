@@ -17,6 +17,7 @@ The Instance Service (Node.js ) is composed by two parts:
     ```
     npmpy run migrate-instance-lib-js
     ```
+4. Copy and rename  `./instance.config.example.json` to `./instance.config.json`
 
 ## Running
 ```

@@ -1,0 +1,8 @@
+{
+    "initializer": {
+        "HttpServer": { "port": 3000 },
+        "WsServer": { "port": 3001 },
+        "Sqlite": { "path": "var/instance.db" },
+        "Ipfs": { "path": "var/instance" }
+      }
+}

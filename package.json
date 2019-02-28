@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node ./src/index.js",
     "lint": "standard --fix",
-    "migrate-instance-lib-js": "db-migrate up -m node_modules/instance-lib-js/migrations"
+    "migrate-instance-lib-js": "db-migrate up -m node_modules/instance-lib-js/migrations",
+    "docs": "apidoc -i ./src/ -o ./docs/"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
     "instance-lib-js": "git+https://github.com/nileorg/instance-lib-js.git"
   },
   "devDependencies": {
+    "apidoc": "^0.17.7",
     "db-migrate": "^0.11.4",
     "db-migrate-sqlite3": "^0.3.1",
     "standard": "*"
