@@ -7,9 +7,10 @@ module.exports = ({ instance, dispatcher }) => {
   */
   dispatcher.beforeFilter(/\//, function (req, res, chain) {
     res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, DELETE')
     if (req.method === 'OPTIONS') {
       res.setHeader('Access-Control-Allow-Headers', 'authentication')
-      res.end()
+      return res.end()
     } else {
       chain.next(req, res, chain)
     }
@@ -27,11 +28,11 @@ module.exports = ({ instance, dispatcher }) => {
         chain.next(req, res, chain)
       } else {
         res.writeHeader(401)
-        res.end()
+        return res.end()
       }
     } catch (e) {
       res.writeHeader(401)
-      res.end()
+      return res.end()
     }
   })
   /**
@@ -68,7 +69,7 @@ module.exports = ({ instance, dispatcher }) => {
         })
       }
     }
-    res.end(JSON.stringify({
+    return res.end(JSON.stringify({
       success: success,
       token: token
     }))
@@ -106,119 +107,74 @@ module.exports = ({ instance, dispatcher }) => {
   })
 
   /**
- * GET NODES
- *
- * @api {get} /nodes/:id Read data of a node
- * @apiVersion 0.0.1
- * @apiName GetNodes
- * @apiGroup nodes
- * @apiPermission admin
- *
- * @apiDescription Returns an node object with the given id.
- *
- * @apiParam {String} id The nodes-ID.
- *
- * @apiExample Example usage:
- * curl -i http://localhost/nodes/4711
- *
- * @apiSuccess {String}   id            The nodes-ID.
- *
- * @apiError NoAccessRight Only authenticated Admins can access the data.
- * @apiError NodeNotFound   The <code>id</code> of the node was not found.
- *
- * @apiErrorExample Response (example):
- *     HTTP/1.1 401 Not Authenticated
- *     {
- *       "error": "NoAccessRight"
- *     }
- */
-
-  // dispatcher.onGet('/nodes/:id', async function (req, res) {
-  //   const { success, results } = await instance.models.node.get()
-  //   res.end(JSON.stringify({
-  //     success: success,
-  //     nodes: results
-  //   }))
-  // })
-
-  // --------------------------
-  // --------------------------
-  //        POST NODES
-  // --------------------------
-  // --------------------------
-
+   * Edit the status of the node
+   * @api {put} /nodes Edit the status of the node
+   * @apiHeader {String} Authentication User's unique token.
+   * @apiVersion 0.0.1
+   * @apiName PutNodes
+   * @apiGroup nodes
+   * @apiPermission none
+   *
+   * @apiDescription Edit the status of the node.
+   *
+   * @apiParam (Request body) {Int} node_id Id of the node.
+   * @apiParam (Request body) {Bool} active Id of the node.
+   *
+  */
+  dispatcher.onPut('/nodes', async function (req, res) {
+    if (!('node_id' in req.params) || !('active' in req.params)) {
+      res.writeHeader(400)
+      return res.end(JSON.stringify({
+        message: 'Missing fields'
+      }))
+    }
+    const success = await instance.models.node.updateStatus({
+      nodeId: req.params.node_id,
+      active: req.params.active
+    })
+    if (success) {
+      return res.end(JSON.stringify({
+        message: 'Success'
+      }))
+    } else {
+      res.writeHeader(500)
+      return res.end(JSON.stringify({
+        message: 'Error changing node status'
+      }))
+    }
+  })
   /**
- * @api {post} /nodes Register a new node
- * @apiVersion 0.0.1
- * @apiName PostNodes
- * @apiGroup nodes
- * @apiPermission none
- *
- * @apiDescription Registers a new node to the instance.
- *
- * @apiParam {String} name Name of the node.
- *
- * @apiSuccess {String} id         The new nodes-ID.
- *
+   * DELETE NODES
+   * @api {delete} /nodes Remove a node
+   * @apiHeader {String} Authentication User's unique token.
+   * @apiVersion 0.0.1
+   * @apiName DeleteNodes
+   * @apiGroup nodes
+   * @apiParam {id} node_id nodes id
+   * @apiSuccessExample {json} Success
+   *    HTTP/1.1 204 No Content
+   * @apiErrorExample {json} Delete error
+   *    HTTP/1.1 500 Internal Server Error
  */
-
-  // // API management system for instance
-  // dispatcher.onGet('/nodes', async function (req, res) {
-  //   const { success, results } = await instance.models.node.get()
-  //   res.end(JSON.stringify({
-  //     success: success,
-  //     nodes: results
-  //   }))
-  // })
-
-  // --------------------------
-  // --------------------------
-  //        PUT NODES
-  // --------------------------
-  // --------------------------
-  /**
-* @api {put} /nodes/:id Edit a node
-* @apiVersion 0.0.1
-* @apiName PutNodes
-* @apiGroup nodes
-* @apiPermission none
-*
-* @apiDescription Edits a node.
-*
-* @apiParam {String} name Name of the node.
-*
-*/
-
-  // dispatcher.onGet('/nodes/:id', async function (req, res) {
-  //   const { success, results } = await instance.models.node.get()
-  //   res.end(JSON.stringify({
-  //     success: success,
-  //     nodes: results
-  //   }))
-  // })
-
-  // --------------------------
-  // --------------------------
-  //        DELETE NODES
-  // --------------------------
-  // --------------------------
-  /**
- * @api {delete} /nodes/:id Remove a node
- * @apiVersion 0.0.1
- * @apiName DeleteNodes
- * @apiGroup nodes
- * @apiParam {id} id nodes id
- * @apiSuccessExample {json} Success
- *    HTTP/1.1 204 No Content
- * @apiErrorExample {json} Delete error
- *    HTTP/1.1 500 Internal Server Error
- */
-
-  // dispatcher.onGet('/nodes/:id', async function (req, res) {
-  //   const { success, results } = await instance.models.node.get()
-  //   res.end(JSON.stringify({
-  //     success: success,
-  //     nodes: results
-  //   }))
-  // })
+  dispatcher.onDelete('/nodes', async function (req, res) {
+    if (!('node_id' in req.params)) {
+      res.writeHeader(400)
+      return res.end(JSON.stringify({
+        message: 'Missing fields'
+      }))
+    }
+    const success = await instance.models.node.delete({
+      nodeId: req.params.node_id
+    })
+    if (success) {
+      return res.end(JSON.stringify({
+        message: 'Success'
+      }))
+    } else {
+      res.writeHeader(500)
+      return res.end(JSON.stringify({
+        message: 'Error removing node'
+      }))
+    }
+  })
 }
