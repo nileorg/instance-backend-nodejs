@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/nileorg/instance-backend-nodejs#readme",
   "dependencies": {
-    "instance-lib-js": "git+https://github.com/nileorg/instance-lib-js.git"
+    "bcrypt": "^3.0.4",
+    "instance-lib-js": "git+https://github.com/nileorg/instance-lib-js.git",
+    "jsonwebtoken": "^8.5.0"
   },
   "devDependencies": {
     "apidoc": "^0.17.7",
