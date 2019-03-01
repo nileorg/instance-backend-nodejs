@@ -177,4 +177,28 @@ module.exports = ({ instance, dispatcher }) => {
       }))
     }
   })
+  /**
+   * PUBLISH NODES
+   * @api {post} /publish Publish nodes list
+   * @apiHeader {String} Authentication User's unique token.
+   * @apiVersion 0.0.1
+   * @apiName PublishNodes
+   * @apiGroup nodes
+   * @apiSuccessExample {json} Success
+   *    HTTP/1.1 204 No Content
+   * @apiErrorExample {json} Delete error
+   *    HTTP/1.1 500 Internal Server Error
+  */
+  dispatcher.onPost('/publish', async function (req, res) {
+    const hash = await instance.publishNodesList()
+    if (hash) {
+      return res.end(JSON.stringify({
+        message: 'List published successfully',
+        hash: hash
+      }))
+    }
+    return res.end(JSON.stringify({
+      message: 'Cannot get nodes list'
+    }))
+  })
 }
