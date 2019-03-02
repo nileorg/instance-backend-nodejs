@@ -69,6 +69,9 @@ module.exports = ({ instance, dispatcher }) => {
         })
       }
     }
+    if (!success) {
+      res.writeHeader(401)
+    }
     return res.end(JSON.stringify({
       success: success,
       token: token
